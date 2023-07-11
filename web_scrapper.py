@@ -78,3 +78,11 @@ def parse_schema(unparsed_schema):
     return schema
 
 
+def apply_schema_to_weather_data(weather_data, schema):
+    data = csv.DictReader(
+        weather_data.splitlines(), delimiter=',', fieldnames=schema
+    )
+
+    return list(data)
+
+
