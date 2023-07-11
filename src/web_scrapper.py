@@ -43,7 +43,6 @@ def get_weather_station_code(weather_station_name, unparsed_weather_stations):
         skipinitialspace=True,
         quotechar='"'
     )
-
     # It seems that only stations with code this long have complete weather data
     STATION_CODE_LENGTH = 3
 
