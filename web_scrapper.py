@@ -86,3 +86,30 @@ def apply_schema_to_weather_data(weather_data, schema):
     return list(data)
 
 
+##########################
+# EXAMPLE USE
+##########################
+
+# if __name__ == '__main__':
+#     year = 2021
+
+#     station_code = get_weather_station_code(
+#         'KRAKÓW-BALICE',
+#         get_file('/wykaz_stacji.csv', encoding='iso8859_2')
+#     )
+
+#     schema = parse_schema(
+#         get_file('/terminowe/synop/s_t_format.txt', encoding="cp1250")
+#     )
+
+#     weather_data = get_file(
+#         f'/terminowe/synop/{year}/{year}_{station_code}_s.zip',
+#         encoding='iso8859_2',
+#         needs_unzipping=True
+#     )
+
+#     data = apply_schema_to_weather_data(weather_data, schema)
+
+#     # Field 'Temperatura powietrza [°C]' is air temperature (information from schema)
+#     # 25 index references 26th hour of a year - 2st January, 1:00 am
+#     print(data[25]['Temperatura powietrza [°C]'])
