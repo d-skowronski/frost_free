@@ -1,6 +1,7 @@
 from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
+from re import finditer, MULTILINE
 import csv
 
 BASE_URL = 'https://danepubliczne.imgw.pl/data/dane_pomiarowo_obserwacyjne/dane_meteorologiczne'
@@ -54,5 +55,26 @@ def get_weather_station_code(weather_station_name, unparsed_weather_stations):
                 raise ValueError(f"Station {weather_station_name} exists, but no weather data is available")
 
     raise ValueError(f"Station {weather_station_name} does not exist")
+
+
+def parse_schema(unparsed_schema):
+    '''
+    Return list of fields from text
+    Text must follow:
+
+    Field1                                    something
+    Field2                                    something
+    Field3                                    something
+
+    Anything else will be discarded
+    This example would return: [Field1, Field2, Field3]
+    '''
+
+    schema = []
+    matches = finditer(r"([A-Z].+?)\s{3,}", unparsed_schema, MULTILINE)
+    for match in matches:
+        schema.append(match.group(1))
+
+    return schema
 
 
