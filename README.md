@@ -1,5 +1,5 @@
-# frost free season
-A script for looking up the last and first frost dates for a given weather station.
+# weather_analysis_poland
+Created for looking up the last and first frost dates for a given weather station.
 
 I wanted to look in the past and determine the length of the growing season in previous years. However, most information on previous weather is not free. Having tried to look for a reputable API, I stumbled upon an official government institution in Poland that handles weather.
 
