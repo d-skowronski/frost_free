@@ -1,4 +1,5 @@
 import web_scraper
+import helpers
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 
@@ -64,7 +65,8 @@ def date_range_finder(year_data, lowest_temperature):
 
 if __name__ == '__main__':
     # Configuration
-    years = range(2001, 2003)
+
+    years = helpers.get_years_range(year_start=2019, year_end=2022)
     station_name = 'KRAKÓW-BALICE'
     lowest_temperature = 2
 
