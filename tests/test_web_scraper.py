@@ -1,5 +1,5 @@
 import pytest
-from src import web_scrapper
+from src import web_scraper
 
 
 @pytest.fixture
@@ -40,34 +40,34 @@ def weather_stations_csv():
 
 # TESTS - get_weather_station_code
 def test_get_weather_station_code_correct(weather_stations_csv):
-    code = web_scrapper.get_weather_station_code("Test_name_2", weather_stations_csv)
+    code = web_scraper.get_weather_station_code("Test_name_2", weather_stations_csv)
     assert code == 131
 
 
 def test_get_weather_station_code_too_long_code(weather_stations_csv):
     with pytest.raises(ValueError):
-        web_scrapper.get_weather_station_code("Test_name_1", weather_stations_csv)
+        web_scraper.get_weather_station_code("Test_name_1", weather_stations_csv)
 
 
 def test_get_weather_station_code_too_short_code(weather_stations_csv):
     with pytest.raises(ValueError):
-        web_scrapper.get_weather_station_code("Test_name_3", weather_stations_csv)
+        web_scraper.get_weather_station_code("Test_name_3", weather_stations_csv)
 
 
 def test_get_weather_station_code_fake_name(weather_stations_csv):
     with pytest.raises(ValueError):
-        web_scrapper.get_weather_station_code("Test_name_fake", weather_stations_csv)
+        web_scraper.get_weather_station_code("Test_name_fake", weather_stations_csv)
 
 
 # TESTS - parse_schema
 def test_parse_schema(schema_txt):
-    schema = web_scrapper.parse_schema(schema_txt)
+    schema = web_scraper.parse_schema(schema_txt)
     assert schema == ['Wyskość próbki [cm]', 'Status pomiaru CIPR']
 
 
 # TESTS - apply_schema_to_weather_data
 def test_apply_schema_to_weather_data(valid_schema, weather_data):
-    data = web_scrapper.apply_schema_to_weather_data(
+    data = web_scraper.apply_schema_to_weather_data(
         weather_data,
         valid_schema
     )
