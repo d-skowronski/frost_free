@@ -1,6 +1,21 @@
 from datetime import date
 
 
+def integer_input(prompt):
+    '''
+    Wrapper for input() that validates only integers
+    '''
+    while True:
+        try:
+            data = input(prompt)
+            if data.isnumeric():
+                return int(data)
+            else:
+                raise TypeError('Please provide this in numeric form')
+        except TypeError as e:
+            print(f'{str(e)}\n')
+
+
 def get_years_range(year_start, year_end):
     '''
     This function provides extra validation.
