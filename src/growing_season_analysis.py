@@ -1,5 +1,19 @@
 import web_scraper
 from datetime import datetime, timedelta
+from dataclasses import dataclass
+
+
+@dataclass
+class DatesRange:
+    start: datetime | None = None
+    end: datetime | None = None
+
+    @property
+    def delta(self):
+        if self.start and self.end:
+            return self.end - self.start
+        else:
+            return timedelta(0)
 
 
 def date_range_finder(year_data, lowest_temperature):
@@ -15,8 +29,8 @@ def date_range_finder(year_data, lowest_temperature):
     # Dictionary key on which analysis will be conducted
     key = 'Temperatura powietrza [°C]'
 
-    max_range = {'start': None, 'end': None, 'delta': timedelta(0)}
-    temporary_range = {}
+    max_range = DatesRange()
+    temporary_range = DatesRange()
 
     prev_datapoint = None
 
@@ -25,23 +39,23 @@ def date_range_finder(year_data, lowest_temperature):
         temperature = float(datapoint[key])
 
         if temperature > lowest_temperature and prev_temperature <= lowest_temperature:
-            temporary_range['start'] = datetime(
+            temporary_range.start = datetime(
                 int(datapoint['Rok']),
                 int(datapoint['Miesiąc']),
                 int(datapoint['Dzień']),
                 int(datapoint['Godzina']),
             )
         elif float(temperature) <= lowest_temperature and prev_temperature > lowest_temperature:
-            temporary_range['end'] = datetime(
+            temporary_range.end = datetime(
                 int(prev_datapoint['Rok']),
                 int(prev_datapoint['Miesiąc']),
                 int(prev_datapoint['Dzień']),
                 int(prev_datapoint['Godzina']),
             )
-            temporary_range['delta'] = temporary_range['end'] - temporary_range['start']
-            if temporary_range['delta'] > max_range['delta']:
+
+            if temporary_range.delta > max_range.delta:
                 max_range = temporary_range
-                temporary_range = {}
+                temporary_range = DatesRange()
 
         prev_datapoint = datapoint
 
@@ -77,8 +91,8 @@ if __name__ == '__main__':
 
         date_range = date_range_finder(mapped_year_data, lowest_temperature)
         representation = f"{year}:\
- {date_range['start'].strftime('%B %d').rjust(14)}\
- - {date_range['end'].strftime('%d %B').ljust(14)}\
-({date_range['delta'].days} days)"
+ {date_range.start.strftime('%B %d').rjust(14)}\
+ - {date_range.end.strftime('%d %B').ljust(14)}\
+({date_range.delta.days} days)"
 
         print(representation)
