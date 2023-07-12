@@ -32,3 +32,21 @@ def get_years_range(year_start, year_end):
         raise ValueError('You can only check previous years')
 
     return range(year_start, year_end+1)
+
+
+def get_years_range_user_input():
+    '''
+    Wrapper around get_years_range that allows for direct input
+    of years from console.
+    '''
+    years = None
+
+    while years is None:
+        try:
+            year_start = integer_input('Starting year: ')
+            year_end = integer_input('Ending year: ')
+            years = get_years_range(year_start=year_start, year_end=year_end)
+        except ValueError as e:
+            print(f'\n{str(e)}\nTry again\n')
+
+    return years
