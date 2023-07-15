@@ -2,7 +2,8 @@ from io import BytesIO
 from zipfile import ZipFile, ZipExtFile
 from urllib.request import urlopen
 from re import finditer, MULTILINE
-from typing import Optional, Callable, Iterable
+from typing import Optional
+from collections.abc import Callable, Iterable
 import csv
 
 BASE_URL = 'https://danepubliczne.imgw.pl/data/dane_pomiarowo_obserwacyjne/dane_meteorologiczne'
@@ -88,7 +89,6 @@ def text_file_from_zip(byte_sequence: bytes, file_number: int = 0) -> ZipExtFile
     '''
     zip = ZipFile(BytesIO(byte_sequence))
     file = zip.open(zip.namelist()[file_number])
-
     return file
 
 
