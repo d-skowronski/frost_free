@@ -1,25 +1,10 @@
 from datetime import date
+import helpers
 
 
-def integer_input(prompt):
+def get_years_range(year_start: int, year_end: int) -> range:
     '''
-    Wrapper for input() that validates only integers
-    '''
-    while True:
-        try:
-            data = input(prompt)
-            if data.isnumeric():
-                return int(data)
-            else:
-                raise TypeError('Please provide this in numeric form')
-        except TypeError as e:
-            print(f'{str(e)}\n')
-
-
-def get_years_range(year_start, year_end):
-    '''
-    This function provides extra validation.
-    Scraping weather data works for years 2001 - current year.
+    Validates if years are in correct range.
 
     Returns range object: year_start to year_end (both inclusive).
 
@@ -34,7 +19,7 @@ def get_years_range(year_start, year_end):
     return range(starting_year, ending_year+1)
 
 
-def get_years_range_user_input():
+def get_years_range_user_input() -> range:
     '''
     Wrapper around get_years_range that allows for direct input
     of years from console.
@@ -43,8 +28,8 @@ def get_years_range_user_input():
 
     while years is None:
         try:
-            year_start = integer_input('Starting year: ')
-            year_end = integer_input('Ending year: ')
+            year_start = int(input('Starting year: '))
+            year_end = int(input('Ending year: '))
             years = get_years_range(year_start=year_start, year_end=year_end)
         except ValueError as e:
             print(f'\n{str(e)}\nTry again\n')
