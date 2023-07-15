@@ -22,16 +22,16 @@ def get_years_range(year_start, year_end):
     Scraping weather data works for years 2001 - current year.
 
     Returns range object: year_start to year_end (both inclusive).
+
+    Scraping weather data works for years 2001 to current year - 1.
     '''
     MIN_YEAR = 2001
     MAX_YEAR = date.today().year - 1
 
-    if year_start < MIN_YEAR:
-        raise ValueError(f'Earliest starting year can be {MIN_YEAR}')
-    elif year_end > MAX_YEAR:
-        raise ValueError('You can only check previous years')
+    starting_year = helpers.MinMaxValidator(year_start, MIN_YEAR, MAX_YEAR).validate()
+    ending_year = helpers.MinMaxValidator(year_end, MIN_YEAR, MAX_YEAR).validate()
 
-    return range(year_start, year_end+1)
+    return range(starting_year, ending_year+1)
 
 
 def get_years_range_user_input():
