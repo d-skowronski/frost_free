@@ -2,9 +2,56 @@ from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
 from re import finditer, MULTILINE
+from typing import Optional, Callable
 import csv
 
 BASE_URL = 'https://danepubliczne.imgw.pl/data/dane_pomiarowo_obserwacyjne/dane_meteorologiczne'
+
+
+def get_default_schema() -> list:
+    schema = parse_schema(
+        get_file('/terminowe/synop/s_t_format.txt', encoding="cp1250")
+    )
+    return schema
+
+
+def get_default_weather_data(year: int, station_code: int, schema: list) -> str:
+    weather_data = get_file(
+        f'/terminowe/synop/{year}/{year}_{station_code}_s.zip',
+        encoding='iso8859_2',
+        needs_unzipping=True
+    )
+
+    return apply_schema_to_weather_data(weather_data, schema)
+
+
+def weather_data_fetcher(
+        *,
+        year: Optional[int] = None,
+        station_code: Optional[int] = None
+        ) -> Callable[[int], list[dict]]:
+    '''
+    If called with year, returns a function that can be called with station_code to retrive weather data
+
+    If called with station_code, returns a function that can be called with year to retrive weather data
+    '''
+    if not ((year is None) ^ (station_code is None)):
+        raise TypeError(
+            'year and station_code are mutualy exclusive. Choose one and call returned object with another.'
+        )
+    schema = get_default_schema()
+
+    if year:
+        def fetch_weather_by_station(station_code: int) -> list[dict]:
+            return get_default_weather_data(year, station_code, schema)
+
+        return fetch_weather_by_station
+
+    elif station_code:
+        def fetch_weather_by_year(year: int) -> list[dict]:
+            return get_default_weather_data(year, station_code, schema)
+
+        return fetch_weather_by_year
 
 
 def get_file(url_ending, encoding, needs_unzipping=False):
