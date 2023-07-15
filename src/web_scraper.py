@@ -1,5 +1,5 @@
 from io import BytesIO
-from zipfile import ZipFile
+from zipfile import ZipFile, ZipExtFile
 from urllib.request import urlopen
 from re import finditer, MULTILINE
 from typing import Optional, Callable, Iterable
@@ -65,7 +65,7 @@ def weather_data_fetcher(
         return fetch_weather_by_year
 
 
-def get_file(url_ending, encoding, needs_unzipping=False):
+def get_file(url_ending: str, encoding: str, needs_unzipping: bool = False) -> str:
     '''
     Get file from a URL.
     If needs_unzipping, decoded data will unzipped and file returned
@@ -82,7 +82,7 @@ def get_file(url_ending, encoding, needs_unzipping=False):
     return data.read().decode(encoding=encoding)
 
 
-def text_file_from_zip(byte_sequence, file_number=0):
+def text_file_from_zip(byte_sequence: bytes, file_number: int = 0) -> ZipExtFile:
     '''
     Parse byte squence to zip file and return a file like object
     '''
@@ -92,7 +92,9 @@ def text_file_from_zip(byte_sequence, file_number=0):
     return file
 
 
-def get_weather_station_code(weather_station_name: str, weather_stations: Optional[Iterable[Iterable[str]]] = None):
+def get_weather_station_code(
+        weather_station_name: str,
+        weather_stations: Optional[Iterable[Iterable[str]]] = None) -> int:
     '''
     Retrive station code based on a name. If weather_stations is not provided, a default list
     of weather stations will be fetched
@@ -116,7 +118,7 @@ def get_weather_station_code(weather_station_name: str, weather_stations: Option
     raise ValueError(f"Station {weather_station_name} does not exist")
 
 
-def parse_schema(unparsed_schema):
+def parse_schema(unparsed_schema: str) -> list:
     '''
     Return list of fields from text
     Text must follow:
@@ -149,32 +151,3 @@ def apply_schema_to_weather_data(weather_data: Iterable[str], schema: Iterable) 
     )
 
     return list(data)
-
-
-##########################
-# EXAMPLE USE
-##########################
-
-# if __name__ == '__main__':
-    # year = 2021
-
-    # station_code = get_weather_station_code(
-    #     'KRAKÓW-BALICE',
-    #     get_file('/wykaz_stacji.csv', encoding='iso8859_2')
-    # )
-
-    # schema = parse_schema(
-    #     get_file('/terminowe/synop/s_t_format.txt', encoding="cp1250")
-    # )
-
-    # weather_data = get_file(
-    #     f'/terminowe/synop/{year}/{year}_{station_code}_s.zip',
-    #     encoding='iso8859_2',
-    #     needs_unzipping=True
-    # )
-
-    # data = apply_schema_to_weather_data(weather_data, schema)
-
-#     # Field 'Temperatura powietrza [°C]' is air temperature (information from schema)
-#     # 25 index references 26th hour of a year - 2st January, 1:00 am
-#     print(data[25]['Temperatura powietrza [°C]'])
