@@ -31,7 +31,7 @@ def get_default_weather_data(year: int, station_code: int, schema: list) -> str:
         f'/terminowe/synop/{year}/{year}_{station_code}_s.zip',
         encoding='iso8859_2',
         needs_unzipping=True
-    )
+    ).splitlines()
 
     return apply_schema_to_weather_data(weather_data, schema)
 
@@ -137,9 +137,15 @@ def parse_schema(unparsed_schema):
     return schema
 
 
-def apply_schema_to_weather_data(weather_data, schema):
+def apply_schema_to_weather_data(weather_data: Iterable[str], schema: Iterable) -> list[dict[str, str]]:
+    '''
+    Uses csv.DictReader to match weather_data with schema. Each element in weather data should be valid CSV.
+
+    Return list of dictionaries where each element is datapoint, and specific data can be retrived with key
+    from schema.
+    '''
     data = csv.DictReader(
-        weather_data.splitlines(), delimiter=',', fieldnames=schema
+        weather_data, delimiter=',', fieldnames=schema
     )
 
     return list(data)
