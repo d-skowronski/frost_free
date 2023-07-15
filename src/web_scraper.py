@@ -2,10 +2,21 @@ from io import BytesIO
 from zipfile import ZipFile
 from urllib.request import urlopen
 from re import finditer, MULTILINE
-from typing import Optional, Callable
+from typing import Optional, Callable, Iterable
 import csv
 
 BASE_URL = 'https://danepubliczne.imgw.pl/data/dane_pomiarowo_obserwacyjne/dane_meteorologiczne'
+
+
+def get_default_station_list() -> list:
+    unparsed_weather_stations = get_file('/wykaz_stacji.csv', encoding='iso8859_2')
+    weather_stations = csv.reader(
+        unparsed_weather_stations.splitlines(),
+        skipinitialspace=True,
+        quotechar='"'
+    )
+
+    return list(weather_stations)
 
 
 def get_default_schema() -> list:
@@ -81,15 +92,17 @@ def text_file_from_zip(byte_sequence, file_number=0):
     return file
 
 
-def get_weather_station_code(weather_station_name, unparsed_weather_stations):
+def get_weather_station_code(weather_station_name: str, weather_stations: Optional[Iterable[Iterable[str]]] = None):
+    '''
+    Retrive station code based on a name. If weather_stations is not provided, a default list
+    of weather stations will be fetched
+    '''
     # Weather stations CSV file schema:
     # long_code, name, code
     # "354180135","HEL","  135"
-    weather_stations = csv.reader(
-        unparsed_weather_stations.splitlines(),
-        skipinitialspace=True,
-        quotechar='"'
-    )
+    if weather_stations is None:
+        weather_stations = get_default_station_list()
+
     # It seems that only stations with code this long have complete weather data
     STATION_CODE_LENGTH = 3
 
