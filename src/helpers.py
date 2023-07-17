@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass
@@ -14,3 +15,25 @@ class MinMaxValidator:
             raise ValueError(f'Value too high! needs to be in range {self.min} to {self.max}')
 
         return self.value
+
+
+def datetime_from_datapoint(
+        datapoint: dict,
+        field_names: list[str] = {
+            'year': 'Rok',
+            'month': 'Miesiac',
+            'day': 'Dzień',
+            'hour': 'Godzina',
+        }
+) -> datetime:
+    '''
+    Create datetime object from datapoint. Maximum resolution is one hour.
+    You can pass different field names if needed.
+    '''
+
+    return datetime(
+        year=int(datapoint[field_names['year']]),
+        month=int(datapoint[field_names['month']]),
+        day=int(datapoint[field_names['day']]),
+        hour=int(datapoint[field_names['hour']]),
+    )
