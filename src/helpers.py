@@ -21,7 +21,7 @@ def datetime_from_datapoint(
         datapoint: dict,
         field_names: list[str] = {
             'year': 'Rok',
-            'month': 'Miesiac',
+            'month': 'Miesiąc',
             'day': 'Dzień',
             'hour': 'Godzina',
         }
