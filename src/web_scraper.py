@@ -40,18 +40,22 @@ def get_default_weather_data(year: int, station_code: int, schema: list) -> str:
 def weather_data_fetcher(
         *,
         year: Optional[int] = None,
-        station_code: Optional[int] = None
+        station_code: Optional[int] = None,
+        schema: Optional[Iterable] = None
         ) -> Callable[[int], list[dict]]:
     '''
     If called with year, returns a function that can be called with station_code to retrive weather data
 
     If called with station_code, returns a function that can be called with year to retrive weather data
+
+    Default schema is used if not provided
     '''
     if not ((year is None) ^ (station_code is None)):
         raise TypeError(
             'year and station_code are mutualy exclusive. Choose one and call returned object with another.'
         )
-    schema = get_default_schema()
+    if schema is None:
+        schema = get_default_schema()
 
     if year:
         def fetch_weather_by_station(station_code: int) -> list[dict]:
