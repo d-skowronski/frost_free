@@ -27,7 +27,7 @@ def get_default_schema() -> list:
     return schema
 
 
-def get_default_weather_data(year: int, station_code: int, schema: list) -> str:
+def get_default_weather_data(year: int, station_code: int, schema: list) -> list[dict[str, str]]:
     weather_data = get_file(
         f'/terminowe/synop/{year}/{year}_{station_code}_s.zip',
         encoding='iso8859_2',
@@ -41,14 +41,17 @@ def weather_data_fetcher(
         *,
         year: Optional[int] = None,
         station_code: Optional[int] = None,
-        schema: Optional[Iterable] = None
+        schema: Optional[Iterable] = None,
+        weather_data_getter_fn: Optional[Callable[[int, int, list], Iterable[dict[str, str]]]] = None,
         ) -> Callable[[int], list[dict]]:
     '''
     If called with year, returns a function that can be called with station_code to retrive weather data
 
     If called with station_code, returns a function that can be called with year to retrive weather data
 
-    Default schema is used if not provided
+    Schema should be a list of fields that can be assigned to csv values.
+    Weather_data_getter_fn is a function retriving data and applying schema.
+    Default schema and weather_data_getter_fn are used if not provided.
     '''
     if not ((year is None) ^ (station_code is None)):
         raise TypeError(
@@ -57,15 +60,18 @@ def weather_data_fetcher(
     if schema is None:
         schema = get_default_schema()
 
+    if weather_data_getter_fn is None:
+        weather_data_getter_fn = get_default_weather_data
+
     if year:
         def fetch_weather_by_station(station_code: int) -> list[dict]:
-            return get_default_weather_data(year, station_code, schema)
+            return weather_data_getter_fn(year, station_code, schema)
 
         return fetch_weather_by_station
 
     elif station_code:
         def fetch_weather_by_year(year: int) -> list[dict]:
-            return get_default_weather_data(year, station_code, schema)
+            return weather_data_getter_fn(year, station_code, schema)
 
         return fetch_weather_by_year
 
