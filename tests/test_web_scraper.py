@@ -74,3 +74,27 @@ def test_apply_schema_to_weather_data(weather_data_after_splitlines, valid_schem
                     {'Station name': 'Test_name', 'Day': '02', 'Hour': '13'},
                     {'Station name': 'Test_name', 'Day': '03', 'Hour': '14'},
                     ]
+
+
+# TESTS weather_data_fetcher
+def test_weather_data_fetcher_by_year():
+    fetch_weather = web_scraper.weather_data_fetcher(year=2022)
+    result = fetch_weather(station_code=566)
+
+    assert isinstance(result, list)
+
+
+def test_weather_data_fetcher_by_station():
+    fetch_weather = web_scraper.weather_data_fetcher(station_code=566)
+    result = fetch_weather(year=2022)
+
+    assert isinstance(result, list)
+
+
+def test_weather_data_fetcher_invalid_args():
+    with pytest.raises(TypeError):
+        web_scraper.weather_data_fetcher(station_code=566, year=2022)
+
+    with pytest.raises(TypeError):
+        web_scraper.weather_data_fetcher()
+
